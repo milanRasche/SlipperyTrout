@@ -1,0 +1,77 @@
+﻿using SlipperyTrout.Chess;
+
+namespace Chess.ConsoleApp;
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        bool running = true;
+        GameState? game = null;
+
+        while (running && game == null)
+        {
+            Console.WriteLine("\n=== Chess Engine ===");
+            Console.WriteLine("1. New Game");
+            Console.WriteLine("2. Load FEN");
+            Console.WriteLine("3. Exit");
+            Console.Write("Select option: ");
+
+            string? input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    game = ChessGame.NewGame();
+                    break;
+
+                case "2":
+                    Console.Write("Enter FEN: ");
+                    string? fen = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(fen))
+                    {
+                        game = ChessGame.FromFEN(fen);
+                    }
+                    break;
+
+                case "3":
+                    running = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid option.");
+                    continue;
+            }
+
+        }
+
+        while (running && game != null)
+        {
+            Console.WriteLine("\n" + GameFormatter.Format(game));
+            Console.Write("Move (e2e4), 'back', or 'exit': ");
+            string? input = Console.ReadLine()?.Trim();
+
+            if (string.Equals(input, "back", StringComparison.OrdinalIgnoreCase))
+            {
+                game = null;
+                break;
+            }
+
+            if (string.Equals(input, "exit", StringComparison.OrdinalIgnoreCase))
+            {
+                running = false;
+                break;
+            }
+
+            if (!ChessGame.TryMakeMove(game, input, out string message))
+            {
+                Console.WriteLine($"Invalid move: {message}");
+                continue;
+            }
+
+            if (MoveValidator.IsInCheck(game, game.WhiteToMove))
+                Console.WriteLine($"Check: { (game.WhiteToMove ? "White" : "Black") } is in check.");
+        }
+    }
+}

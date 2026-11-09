@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SlipperyTrout.Chess
+{
+    public class ChessGame
+    {
+        public char[,] Squares = new char[8, 8];
+
+        public static GameState NewGame()
+        {
+            //FEN for new game
+            return FENParser.ParseFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        }
+
+        public static GameState FromFEN(string fen)
+        {
+            return FENParser.ParseFEN(fen);
+        }
+
+        public GameState MakeMove(GameState gameState, String move)
+        {
+            
+        }
+    }
+}
