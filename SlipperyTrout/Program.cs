@@ -1,4 +1,5 @@
-﻿using SlipperyTrout.Chess;
+﻿
+using SlipperyTrout.Chess;
 
 namespace Chess.ConsoleApp;
 
@@ -32,7 +33,14 @@ internal class Program
 
                     if (!string.IsNullOrWhiteSpace(fen))
                     {
-                        game = ChessGame.FromFEN(fen);
+                        try
+                        {
+                            game = ChessGame.FromFEN(fen);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Invalid FEN: {ex.Message}");
+                        }
                     }
                     break;
 
@@ -47,7 +55,45 @@ internal class Program
 
             if (game != null)
             {
-                Console.WriteLine("\n" + GameFormatter.Format(game));
+                PlayGame(game);
+            }
+        }
+    }
+
+    static void PlayGame(GameState game)
+    {
+        ChessGame chessGame = new ChessGame();
+
+        bool playing = true;
+
+        while (playing)
+        {
+            Console.WriteLine("\n" + GameFormatter.Format(game));
+
+            Console.WriteLine(
+                game.WhiteToMove ? "\nWhite to move." : "\nBlack to move.");
+
+            Console.Write("Enter move (e.g. e2e4), or 'exit': ");
+
+            string? move = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(move))
+                continue;
+
+            if (move.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            {
+                playing = false;
+                continue;
+            }
+
+            try
+            {
+                game = chessGame.MakeMove(game, move);
+                Console.WriteLine("Move successful!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Move rejected: {ex.Message}");
             }
         }
     }

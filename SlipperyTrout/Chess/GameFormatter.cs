@@ -61,7 +61,7 @@ namespace SlipperyTrout.Chess
             {
                 for (int i = 0; i < game.MoveHistory.Count; i++)
                 {
-                    sb.AppendLine($"{i + 1}. {game.MoveHistory[i].StandardNotation}");
+                    sb.AppendLine($"{i + 1}. {game.MoveHistory[i].UCIFormat}");
                 }
             }
 

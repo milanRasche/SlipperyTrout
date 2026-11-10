@@ -1,0 +1,331 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SlipperyTrout.Chess
+{
+    public class MoveValidator
+    {
+        public bool ValidateMove (GameState gameState, Move move)
+        {
+            if (move.FromRow < 0 || move.FromRow >= 8 ||
+                move.FromCol < 0 || move.FromCol >= 8 ||
+                move.ToRow < 0 || move.ToRow >= 8 ||
+                move.ToCol < 0 || move.ToCol >= 8)
+                return false;
+
+            char piece = gameState.Board[move.FromRow, move.FromCol];
+            bool isWhiteMove = gameState.WhiteToMove;
+
+            //Cant move empty space
+            if (piece == '\0')
+                return false;
+
+            //Check that the player is trying to move their own piece
+            if (char.IsUpper(piece) && !isWhiteMove) return false;
+
+            switch (char.ToLower(piece))
+            {
+                case 'p':
+                    if (! ValidatePawnMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                case 'r':
+                    if (!ValidateRookMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                case 'n':
+                    if (!ValidateKnightMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                case 'b':
+                    if (!ValidateBishopMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                case 'q':
+                    if (!ValidateQueenMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                case 'k':
+                    if (!ValidateKingMove(gameState, move, isWhiteMove)) return false;
+                    break;
+                default:
+                    return false;
+            }
+            //Check for check, checkmate, stalemate, repetition of moves.
+
+            return true;
+        }
+
+        private bool ValidatePawnMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int direction = isWhiteMove ? -1 : 1;
+            int startingRow = isWhiteMove ? 6 : 1;
+
+            int rowDifference = move.ToRow - move.FromRow;
+            int colDifference = Math.Abs(move.ToCol - move.FromCol);
+
+            char destinationPiece = gameState.Board[move.ToRow, move.ToCol];
+
+            // Check that the pawn is not moving more than two squares
+            if (Math.Abs(rowDifference) > 2)
+                return false;
+
+            // Check that the pawn is moving in the correct direction
+            if (Math.Sign(rowDifference) != direction)
+                return false;
+
+            // Straight movement
+            if (move.FromCol == move.ToCol)
+            {
+                // Pawns cannot move forward into an occupied square
+                if (destinationPiece != '\0')
+                    return false;
+
+                // Moving two squares
+                if (Math.Abs(rowDifference) == 2)
+                {
+                    // Pawn must be on its starting position
+                    if (move.FromRow != startingRow)
+                        return false;
+
+                    // Check that the intermediate square is empty
+                    int intermediateRow = move.FromRow + direction;
+
+                    if (gameState.Board[intermediateRow, move.FromCol] != '\0')
+                        return false;
+                }
+
+                return true;
+            }
+
+            // Diagonal movement
+            if (colDifference == 1 && Math.Abs(rowDifference) == 1)
+            {
+                // Normal diagonal capture
+                if (destinationPiece != '\0')
+                {
+                    // Cannot capture your own piece
+                    return char.IsUpper(destinationPiece) != isWhiteMove;
+                }
+
+                // En passant capture
+                if (!string.IsNullOrEmpty(gameState.EnPassantSquare))
+                {
+                    // Convert FEN square (e.g. "e3") to board coordinates
+                    int enPassantCol = gameState.EnPassantSquare[0] - 'a';
+                    int enPassantRow = 8 - int.Parse(gameState.EnPassantSquare[1].ToString());
+
+                    if (move.ToCol == enPassantCol &&
+                        move.ToRow == enPassantRow)
+                    {
+                        // The captured pawn must exist behind the en passant square
+                        char capturedPawn = gameState.Board[move.FromRow, move.ToCol];
+
+                        char expectedPawn = isWhiteMove ? 'p' : 'P';
+
+                        return capturedPawn == expectedPawn;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool ValidateRookMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int rowDifference = move.ToRow - move.FromRow;
+            int colDifference = move.ToCol - move.FromCol;
+
+            // Rook must move horizontally or vertically, not diagonally
+            if (rowDifference != 0 && colDifference != 0)
+                return false;
+
+            // Rook must actually move
+            if (rowDifference == 0 && colDifference == 0)
+                return false;
+
+            // Check destination square
+            char destinationPiece = gameState.Board[move.ToRow, move.ToCol];
+
+            // Cannot capture your own piece
+            if (destinationPiece != '\0')
+            {
+                if (char.IsUpper(destinationPiece) == isWhiteMove)
+                    return false;
+            }
+
+            // Determine movement direction
+            int rowDirection = Math.Sign(rowDifference);
+            int colDirection = Math.Sign(colDifference);
+
+            // Check every square between the starting and destination squares
+            int currentRow = move.FromRow + rowDirection;
+            int currentCol = move.FromCol + colDirection;
+
+            while (currentRow != move.ToRow || currentCol != move.ToCol)
+            {
+                if (gameState.Board[currentRow, currentCol] != '\0')
+                    return false;
+
+                currentRow += rowDirection;
+                currentCol += colDirection;
+            }
+
+            return true;
+        }
+
+        private bool ValidateKnightMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int rowDifference = Math.Abs(move.ToRow - move.FromRow);
+            int colDifference = Math.Abs(move.ToCol - move.FromCol);
+
+            // Knight must move in an L-shape
+            if (!((rowDifference == 2 && colDifference == 1) ||
+                  (rowDifference == 1 && colDifference == 2)))
+                return false;
+
+            // Check destination square
+            char destinationPiece = gameState.Board[move.ToRow, move.ToCol];
+
+            // Cannot capture your own piece
+            if (destinationPiece != '\0')
+            {
+                if (char.IsUpper(destinationPiece) == isWhiteMove)
+                    return false;
+            }
+
+            return true;
+        }   
+
+        private bool ValidateBishopMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int rowDifference = move.ToRow - move.FromRow;
+            int colDifference = move.ToCol - move.FromCol;
+
+            // Bishop must move diagonally
+            if (Math.Abs(rowDifference) != Math.Abs(colDifference))
+                return false;
+
+            // Bishop must actually move
+            if (rowDifference == 0)
+                return false;
+
+            // Check destination square
+            char destinationPiece = gameState.Board[move.ToRow, move.ToCol];
+
+            // Cannot capture your own piece
+            if (destinationPiece != '\0')
+            {
+                if (char.IsUpper(destinationPiece) == isWhiteMove)
+                    return false;
+            }
+
+            // Determine movement direction
+            int rowDirection = Math.Sign(rowDifference);
+            int colDirection = Math.Sign(colDifference);
+
+            // Check every square between the starting and destination squares
+            int currentRow = move.FromRow + rowDirection;
+            int currentCol = move.FromCol + colDirection;
+
+            while (currentRow != move.ToRow || currentCol != move.ToCol)
+            {
+                if (gameState.Board[currentRow, currentCol] != '\0')
+                    return false;
+
+                currentRow += rowDirection;
+                currentCol += colDirection;
+            }
+
+            return true;
+        } 
+
+        private bool ValidateQueenMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            // Queen is a rock with a bishop combined
+            return ValidateRookMove(gameState, move, isWhiteMove) || ValidateBishopMove(gameState, move, isWhiteMove);
+        }
+
+        private bool ValidateKingMove(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int rowDifference = Math.Abs(move.ToRow - move.FromRow);
+            int colDifference = Math.Abs(move.ToCol - move.FromCol);
+
+            char destinationPiece = gameState.Board[move.ToRow, move.ToCol];
+
+            // Cannot capture your own piece
+            if (destinationPiece != '\0')
+            {
+                if (char.IsUpper(destinationPiece) == isWhiteMove)
+                    return false;
+            }
+
+            // Normal king movement: one square in any direction
+            if (rowDifference <= 1 && colDifference <= 1)
+            {
+                if (rowDifference == 0 && colDifference == 0)
+                    return false;
+
+                return true;
+            }
+
+            // Castling: king moves two squares horizontally
+            if (rowDifference == 0 && colDifference == 2)
+            {
+                return ValidateCastling(gameState, move, isWhiteMove);
+            }
+
+            return false;
+        }
+
+        private bool ValidateCastling(GameState gameState, Move move, bool isWhiteMove)
+        {
+            int startingRow = isWhiteMove ? 7 : 0;
+
+            // King must start on its original square
+            if (move.FromCol != 4 || move.FromRow != startingRow)
+                return false;
+
+            // King must move two squares horizontally
+            if (move.ToRow != startingRow ||
+                Math.Abs(move.ToCol - move.FromCol) != 2)
+                return false;
+
+            bool isKingSide = move.ToCol > move.FromCol;
+
+            // Check castling rights
+            if (isWhiteMove)
+            {
+                if (isKingSide && !gameState.WhiteCanCastleKingside)
+                    return false;
+
+                if (!isKingSide && !gameState.WhiteCanCastleQueenSide)
+                    return false;
+            }
+            else
+            {
+                if (isKingSide && !gameState.BlackCanCastleKingside)
+                    return false;
+
+                if (!isKingSide && !gameState.BlackCanCastleQueenSide)
+                    return false;
+            }
+
+            // Check that the correct rook exists
+            int rookCol = isKingSide ? 7 : 0;
+            char expectedRook = isWhiteMove ? 'R' : 'r';
+
+            if (gameState.Board[startingRow, rookCol] != expectedRook)
+                return false;
+
+            // Check squares between king and rook are empty
+            int direction = isKingSide ? 1 : -1;
+
+            for (int col = move.FromCol + direction;
+                 col != rookCol;
+                 col += direction)
+            {
+                if (gameState.Board[startingRow, col] != '\0')
+                    return false;
+            }
+
+            return true;
+        }
+    }
+}
