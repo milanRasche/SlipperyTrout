@@ -44,9 +44,7 @@ namespace SlipperyTrout.Chess
             if (char.ToUpper(piece) == 'P' &&
                 (move.ToRow == 0 || move.ToRow == 7))
             {
-                char promotion = move.Promotion == '\0'
-                    ? 'Q'
-                    : char.ToUpper(move.Promotion);
+                char promotion = char.ToUpper(move.Promotion);
 
                 if (promotion != 'Q' && promotion != 'R' &&
                     promotion != 'B' && promotion != 'N')
@@ -92,6 +90,12 @@ namespace SlipperyTrout.Chess
 
             // Switch active player
             gameState.WhiteToMove = !isWhiteMove;
+
+            string positionKey = PositionKeyBuilder.Create(gameState);
+            gameState.PositionOccurrences.TryGetValue(
+                positionKey,
+                out int occurrences);
+            gameState.PositionOccurrences[positionKey] = occurrences + 1;
         }
 
         private void PerformCastling(GameState gameState, Move move)

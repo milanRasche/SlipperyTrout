@@ -7,6 +7,7 @@ namespace SlipperyTrout.Chess
     {
         private readonly MoveValidator _validator = new();
         private readonly MovePerformer _performer = new();
+        private readonly MoveParser _moveParser = new();
 
         public static GameState NewGame()
         {
@@ -38,55 +39,7 @@ namespace SlipperyTrout.Chess
 
         private Move ParseMove(string uciMove)
         {
-            if (string.IsNullOrWhiteSpace(uciMove))
-                throw new ArgumentException("Move cannot be empty.");
-
-            uciMove = uciMove.Trim().ToLowerInvariant();
-
-            if (uciMove.Length != 4 && uciMove.Length != 5)
-                throw new ArgumentException("Invalid UCI move format.");
-
-            char fromFile = uciMove[0];
-            char fromRank = uciMove[1];
-            char toFile = uciMove[2];
-            char toRank = uciMove[3];
-
-            // Validate coordinates
-            if (fromFile < 'a' || fromFile > 'h' ||
-                toFile < 'a' || toFile > 'h' ||
-                fromRank < '1' || fromRank > '8' ||
-                toRank < '1' || toRank > '8')
-            {
-                throw new ArgumentException("Invalid chess coordinates.");
-            }
-
-            int fromCol = fromFile - 'a';
-            int fromRow = 8 - (fromRank - '0');
-
-            int toCol = toFile - 'a';
-            int toRow = 8 - (toRank - '0');
-
-            char promotion = '\0';
-
-            if (uciMove.Length == 5)
-            {
-                promotion = uciMove[4];
-
-                if (promotion != 'q' && promotion != 'r' &&
-                    promotion != 'b' && promotion != 'n')
-                {
-                    throw new ArgumentException(
-                        "Invalid promotion piece. Use q, r, b or n.");
-                }
-            }
-
-            return new Move(
-                uciMove,
-                fromRow,
-                fromCol,
-                toRow,
-                toCol,
-                promotion);
+            return _moveParser.ParseStandardMove(uciMove);
         }
     }
 }

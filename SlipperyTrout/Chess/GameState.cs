@@ -21,5 +21,6 @@ namespace SlipperyTrout.Chess
         public int HalfMoveCLock { get; set; }
         public int FullMoveNumber { get; set; }
         public List<Move> MoveHistory { get; set; } = new();
+        public Dictionary<string, int> PositionOccurrences { get; set; } = new();
     }
 }

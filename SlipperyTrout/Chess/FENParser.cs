@@ -46,6 +46,10 @@ namespace SlipperyTrout.Chess
             gameState.HalfMoveCLock = int.Parse(parts[4]);
             // Fullmove number
             gameState.FullMoveNumber = int.Parse(parts[5]);
+
+            string positionKey = PositionKeyBuilder.Create(gameState);
+            gameState.PositionOccurrences[positionKey] = 1;
+
             return gameState;
         }
     }

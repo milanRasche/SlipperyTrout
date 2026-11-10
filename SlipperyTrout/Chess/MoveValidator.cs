@@ -24,6 +24,18 @@ namespace SlipperyTrout.Chess
             //Check that the player is trying to move their own piece
             if (char.IsUpper(piece) != isWhiteMove) return false;
 
+            bool isPawn = char.ToUpper(piece) == 'P';
+            bool reachesBackRank = move.ToRow == 0 || move.ToRow == 7;
+
+            // UCI requires a promotion piece exactly when a pawn reaches the back rank.
+            if (isPawn && reachesBackRank != (move.Promotion != '\0'))
+                return false;
+
+            if (move.Promotion != '\0' &&
+                (!isPawn || !reachesBackRank ||
+                 !IsValidPromotionPiece(move.Promotion)))
+                return false;
+
             switch (char.ToLower(piece))
             {
                 case 'p':
@@ -274,6 +286,11 @@ namespace SlipperyTrout.Chess
         private bool IsInBounds(int row, int col)
         {
             return row >= 0 && row < 8 && col >= 0 && col < 8;
+        }
+
+        private bool IsValidPromotionPiece(char promotion)
+        {
+            return char.ToLower(promotion) is 'q' or 'r' or 'b' or 'n';
         }
 
         private bool ValidatePawnMove(GameState gameState, Move move, bool isWhiteMove)

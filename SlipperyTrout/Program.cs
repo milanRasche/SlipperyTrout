@@ -84,6 +84,13 @@ internal class Program
                 break;
             }
 
+            DrawReason drawReason = DrawRules.GetDrawReason(game);
+            if (drawReason != DrawReason.None)
+            {
+                Console.WriteLine($"Draw: {FormatDrawReason(drawReason)}.");
+                break;
+            }
+
             if (validator.IsInCheck(game, game.WhiteToMove))
             {
                 string checkedSide = game.WhiteToMove ? "White" : "Black";
@@ -93,7 +100,7 @@ internal class Program
             Console.WriteLine(
                 game.WhiteToMove ? "\nWhite to move." : "\nBlack to move.");
 
-            Console.Write("Enter move (e.g. e2e4), or 'exit': ");
+            Console.Write("Enter move (e.g. e2e4 or e7e8q to promote), or 'exit': ");
 
             string? move = Console.ReadLine();
 
@@ -116,5 +123,18 @@ internal class Program
                 Console.WriteLine($"Move rejected: {ex.Message}");
             }
         }
+
+    static string FormatDrawReason(DrawReason reason)
+    {
+        return reason switch
+        {
+            DrawReason.ThreefoldRepetition => "threefold repetition",
+            DrawReason.FivefoldRepetition => "fivefold repetition",
+            DrawReason.FiftyMoveRule => "the fifty-move rule",
+            DrawReason.SeventyFiveMoveRule => "the seventy-five-move rule",
+            DrawReason.InsufficientMaterial => "insufficient material",
+            _ => "draw rule"
+        };
+    }
     }
 }

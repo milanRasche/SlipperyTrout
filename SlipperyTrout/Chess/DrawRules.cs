@@ -1,0 +1,106 @@
+namespace SlipperyTrout.Chess;
+
+public enum DrawReason
+{
+    None,
+    ThreefoldRepetition,
+    FivefoldRepetition,
+    FiftyMoveRule,
+    SeventyFiveMoveRule,
+    InsufficientMaterial
+}
+
+public static class DrawRules
+{
+    public static bool IsThreefoldRepetition(GameState gameState)
+    {
+        return GetOccurrences(gameState) >= 3;
+    }
+
+    public static bool IsFivefoldRepetition(GameState gameState)
+    {
+        return GetOccurrences(gameState) >= 5;
+    }
+
+    public static bool IsFiftyMoveRule(GameState gameState)
+    {
+        return gameState.HalfMoveCLock >= 100;
+    }
+
+    public static bool IsSeventyFiveMoveRule(GameState gameState)
+    {
+        return gameState.HalfMoveCLock >= 150;
+    }
+
+    public static bool IsInsufficientMaterial(GameState gameState)
+    {
+        List<(char Piece, int Row, int Col)> pieces = new();
+
+        for (int row = 0; row < 8; row++)
+        {
+            for (int col = 0; col < 8; col++)
+            {
+                char piece = gameState.Board[row, col];
+                if (piece != '\0' && char.ToUpper(piece) != 'K')
+                    pieces.Add((piece, row, col));
+            }
+        }
+
+        if (pieces.Count == 0)
+            return true;
+
+        if (pieces.Any(piece =>
+            char.ToUpper(piece.Piece) is 'P' or 'R' or 'Q'))
+            return false;
+
+        if (pieces.Count == 1)
+            return true;
+
+        return pieces.All(piece => char.ToUpper(piece.Piece) == 'B') &&
+            pieces.Select(piece => (piece.Row + piece.Col) % 2).Distinct().Count() == 1;
+    }
+
+    public static bool IsAutomaticDraw(GameState gameState)
+    {
+        return IsFivefoldRepetition(gameState) ||
+            IsSeventyFiveMoveRule(gameState) ||
+            IsInsufficientMaterial(gameState);
+    }
+
+    public static bool IsClaimableDraw(GameState gameState)
+    {
+        return IsThreefoldRepetition(gameState) ||
+            IsFiftyMoveRule(gameState);
+    }
+
+    public static DrawReason GetDrawReason(GameState gameState)
+    {
+        if (IsFivefoldRepetition(gameState))
+            return DrawReason.FivefoldRepetition;
+
+        if (IsSeventyFiveMoveRule(gameState))
+            return DrawReason.SeventyFiveMoveRule;
+
+        if (IsInsufficientMaterial(gameState))
+            return DrawReason.InsufficientMaterial;
+
+        if (IsThreefoldRepetition(gameState))
+            return DrawReason.ThreefoldRepetition;
+
+        if (IsFiftyMoveRule(gameState))
+            return DrawReason.FiftyMoveRule;
+
+        return DrawReason.None;
+    }
+
+    private static int GetOccurrences(GameState gameState)
+    {
+        string positionKey = PositionKeyBuilder.Create(gameState);
+
+        return gameState.PositionOccurrences.TryGetValue(
+            positionKey,
+            out int occurrences)
+            ? occurrences
+            : 0;
+    }
+}
