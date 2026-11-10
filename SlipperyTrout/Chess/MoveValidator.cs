@@ -122,6 +122,69 @@ namespace SlipperyTrout.Chess
             return false;
         }
 
+        public bool IsCheckmate(GameState gameState)
+        {
+            bool isWhite = gameState.WhiteToMove;
+            return IsInCheck(gameState, isWhite) && !HasAnyLegalMove(gameState);
+        }
+
+        public bool IsStalemate(GameState gameState)
+        {
+            bool isWhite = gameState.WhiteToMove;
+            return !IsInCheck(gameState, isWhite) && !HasAnyLegalMove(gameState);
+        }
+
+        public bool HasAnyLegalMove(GameState gameState)
+        {
+            bool isWhite = gameState.WhiteToMove;
+
+            for (int fromRow = 0; fromRow < 8; fromRow++)
+            {
+                for (int fromCol = 0; fromCol < 8; fromCol++)
+                {
+                    char piece = gameState.Board[fromRow, fromCol];
+                    if (piece == '\0' || char.IsUpper(piece) != isWhite)
+                        continue;
+
+                    for (int toRow = 0; toRow < 8; toRow++)
+                    {
+                        for (int toCol = 0; toCol < 8; toCol++)
+                        {
+                            bool isPromotion = char.ToUpper(piece) == 'P' &&
+                                (toRow == 0 || toRow == 7);
+
+                            if (isPromotion)
+                            {
+                                char[] promotions = { 'q', 'r', 'b', 'n' };
+                                foreach (char promotion in promotions)
+                                {
+                                    if (ValidateMove(gameState, new Move(
+                                        string.Empty,
+                                        fromRow,
+                                        fromCol,
+                                        toRow,
+                                        toCol,
+                                        promotion)))
+                                        return true;
+                                }
+                            }
+                            else if (ValidateMove(gameState, new Move(
+                                string.Empty,
+                                fromRow,
+                                fromCol,
+                                toRow,
+                                toCol)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         private bool IsMoveSafeAfterMove(GameState gameState, Move move, bool isWhiteMove)
         {
             char[,] originalBoard = (char[,])gameState.Board.Clone();

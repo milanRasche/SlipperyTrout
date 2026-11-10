@@ -63,12 +63,32 @@ internal class Program
     static void PlayGame(GameState game)
     {
         ChessGame chessGame = new ChessGame();
+        MoveValidator validator = new MoveValidator();
 
         bool playing = true;
 
         while (playing)
         {
             Console.WriteLine("\n" + GameFormatter.Format(game));
+
+            if (validator.IsCheckmate(game))
+            {
+                string checkmatedSide = game.WhiteToMove ? "White" : "Black";
+                Console.WriteLine($"Checkmate! {checkmatedSide} is checkmated.");
+                break;
+            }
+
+            if (validator.IsStalemate(game))
+            {
+                Console.WriteLine("Stalemate! The game is a draw.");
+                break;
+            }
+
+            if (validator.IsInCheck(game, game.WhiteToMove))
+            {
+                string checkedSide = game.WhiteToMove ? "White" : "Black";
+                Console.WriteLine($"Check! {checkedSide} is in check.");
+            }
 
             Console.WriteLine(
                 game.WhiteToMove ? "\nWhite to move." : "\nBlack to move.");
