@@ -3,8 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\interfaces\\imovevalidationprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\interfaces\\imovevalidationprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\controllers\\gamescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\controllers\\gamescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\models\\gamestatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\models\\gamestatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C6834DE9-48FD-31C1-8DF5-D96BED81EDC8}|Engine\\Engine.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\engine\\validation\\movevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C6834DE9-48FD-31C1-8DF5-D96BED81EDC8}|Engine\\Engine.csproj|solutionrelative:engine\\validation\\movevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B089A7D7-4AA0-C7D6-2768-C7A040FDC0A3}|Providers\\Providers.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\providers\\local\\localmovevalidationprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B089A7D7-4AA0-C7D6-2768-C7A040FDC0A3}|Providers\\Providers.csproj|solutionrelative:providers\\local\\localmovevalidationprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\models\\moverequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\models\\moverequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\services\\gameservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,52 +35,8 @@
       "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\models\\move.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\models\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\models\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\models\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\models\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\enums\\piecetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\enums\\piecetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\enums\\playercolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\enums\\playercolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B089A7D7-4AA0-C7D6-2768-C7A040FDC0A3}|Providers\\Providers.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\providers\\providers.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{B089A7D7-4AA0-C7D6-2768-C7A040FDC0A3}|Providers\\Providers.csproj|solutionrelative:providers\\providers.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6834DE9-48FD-31C1-8DF5-D96BED81EDC8}|Engine\\Engine.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\engine\\engine.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{C6834DE9-48FD-31C1-8DF5-D96BED81EDC8}|Engine\\Engine.csproj|solutionrelative:engine\\engine.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\core.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\core.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\core\\models\\gameoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\models\\gameoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\controllers\\gamescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\controllers\\gamescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\hubs\\gamehub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\hubs\\gamehub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|c:\\users\\raschem\\source\\repos\\slipperytrout\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D000B2B8-141D-4388-BD74-A0208580D2B6}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -70,212 +46,132 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Move.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Move.cs",
-              "RelativeDocumentMoniker": "Core\\Models\\Move.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Move.cs",
-              "RelativeToolTip": "Core\\Models\\Move.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAArAAAAAAAAAA==",
+              "Title": "GameStateDto.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Models\\GameStateDto.cs",
+              "RelativeDocumentMoniker": "API\\Models\\GameStateDto.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Models\\GameStateDto.cs",
+              "RelativeToolTip": "API\\Models\\GameStateDto.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAADYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T14:05:54.067Z",
-              "EditorCaption": "",
-              "OwnerCaption": "%2"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IMoveValidationProvider.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Interfaces\\IMoveValidationProvider.cs",
-              "RelativeDocumentMoniker": "Core\\Interfaces\\IMoveValidationProvider.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Interfaces\\IMoveValidationProvider.cs",
-              "RelativeToolTip": "Core\\Interfaces\\IMoveValidationProvider.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T14:05:13.632Z",
+              "WhenOpened": "2026-11-11T15:31:03.843Z",
               "EditorCaption": "",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "PieceType.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PieceType.cs",
-              "RelativeDocumentMoniker": "Core\\Enums\\PieceType.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PieceType.cs",
-              "RelativeToolTip": "Core\\Enums\\PieceType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAMAAAAAAAAAA==",
+              "Title": "MoveRequest.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Models\\MoveRequest.cs",
+              "RelativeDocumentMoniker": "API\\Models\\MoveRequest.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Models\\MoveRequest.cs",
+              "RelativeToolTip": "API\\Models\\MoveRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:42:45.978Z",
+              "WhenOpened": "2026-11-11T15:27:52.868Z",
               "EditorCaption": "",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "PlayerColor.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PlayerColor.cs",
-              "RelativeDocumentMoniker": "Core\\Enums\\PlayerColor.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PlayerColor.cs",
-              "RelativeToolTip": "Core\\Enums\\PlayerColor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAANAAAAAAAAAA==",
+              "Title": "GameService.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Services\\GameService.cs",
+              "RelativeDocumentMoniker": "Core\\Services\\GameService.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Services\\GameService.cs",
+              "RelativeToolTip": "Core\\Services\\GameService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:42:18.594Z",
-              "EditorCaption": "",
-              "OwnerCaption": "%2"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Piece.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Piece.cs",
-              "RelativeDocumentMoniker": "Core\\Models\\Piece.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Piece.cs",
-              "RelativeToolTip": "Core\\Models\\Piece.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:42:07.947Z",
+              "WhenOpened": "2026-11-11T15:27:44.003Z",
               "EditorCaption": "",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "Providers",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Providers\\Providers.csproj",
-              "RelativeDocumentMoniker": "Providers\\Providers.csproj",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Providers\\Providers.csproj",
-              "RelativeToolTip": "Providers\\Providers.csproj",
+              "Title": "Move.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Move.cs",
+              "RelativeDocumentMoniker": "Core\\Models\\Move.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\Move.cs",
+              "RelativeToolTip": "Core\\Models\\Move.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-11-11T13:26:38.427Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-11T15:27:38.625Z",
               "EditorCaption": "",
-              "OwnerCaption": "Providers"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Engine",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Engine\\Engine.csproj",
-              "RelativeDocumentMoniker": "Engine\\Engine.csproj",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Engine\\Engine.csproj",
-              "RelativeToolTip": "Engine\\Engine.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-11-11T13:26:26Z",
-              "EditorCaption": "",
-              "OwnerCaption": "Engine"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Core",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Core.csproj",
-              "RelativeDocumentMoniker": "Core\\Core.csproj",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Core.csproj",
-              "RelativeToolTip": "Core\\Core.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-11-11T13:26:20.544Z",
-              "EditorCaption": "",
-              "OwnerCaption": "Core"
+              "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "GameState.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\GameState.cs",
-              "RelativeDocumentMoniker": "Core\\Models\\GameState.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\GameState.cs",
-              "RelativeToolTip": "Core\\Models\\GameState.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
+              "Title": "MoveValidator.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Engine\\Validation\\MoveValidator.cs",
+              "RelativeDocumentMoniker": "Engine\\Validation\\MoveValidator.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Engine\\Validation\\MoveValidator.cs",
+              "RelativeToolTip": "Engine\\Validation\\MoveValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:13:35.978Z",
+              "WhenOpened": "2026-11-11T15:25:52.804Z",
               "EditorCaption": "",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "GameService.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Services\\GameService.cs",
-              "RelativeDocumentMoniker": "Core\\Services\\GameService.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Services\\GameService.cs",
-              "RelativeToolTip": "Core\\Services\\GameService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:12:31.488Z",
+              "WhenOpened": "2026-11-11T15:25:35.282Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%2"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GamesController.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Controllers\\GamesController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\GamesController.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Controllers\\GamesController.cs",
+              "RelativeToolTip": "API\\Controllers\\GamesController.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAgwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-11T14:46:53.215Z",
               "EditorCaption": "",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "Infrastructure",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Infrastructure\\Infrastructure.csproj",
-              "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Infrastructure\\Infrastructure.csproj",
-              "RelativeToolTip": "Infrastructure\\Infrastructure.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-11-11T13:26:32.035Z",
+              "Title": "PieceType.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PieceType.cs",
+              "RelativeDocumentMoniker": "Core\\Enums\\PieceType.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Enums\\PieceType.cs",
+              "RelativeToolTip": "Core\\Enums\\PieceType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-11T14:49:01.154Z",
               "EditorCaption": "",
-              "OwnerCaption": "Infrastructure"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "GameOptions.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\GameOptions.cs",
-              "RelativeDocumentMoniker": "Core\\Models\\GameOptions.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Core\\Models\\GameOptions.cs",
-              "RelativeToolTip": "Core\\Models\\GameOptions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:13:24.088Z",
               "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "GamesController.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Controllers\\GamesController.cs",
-              "RelativeDocumentMoniker": "API\\Controllers\\GamesController.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Controllers\\GamesController.cs",
-              "RelativeToolTip": "API\\Controllers\\GamesController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAkwDIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "LocalMoveValidationProvider.cs",
+              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Providers\\Local\\LocalMoveValidationProvider.cs",
+              "RelativeDocumentMoniker": "Providers\\Local\\LocalMoveValidationProvider.cs",
+              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\Providers\\Local\\LocalMoveValidationProvider.cs",
+              "RelativeToolTip": "Providers\\Local\\LocalMoveValidationProvider.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:13:07.507Z",
-              "OwnerCaption": "%2"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "GameHub.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Hubs\\GameHub.cs",
-              "RelativeDocumentMoniker": "API\\Hubs\\GameHub.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Hubs\\GameHub.cs",
-              "RelativeToolTip": "API\\Hubs\\GameHub.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:13:06.457Z",
-              "OwnerCaption": "%2"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Program.cs",
-              "RelativeDocumentMoniker": "API\\Program.cs",
-              "ToolTip": "C:\\Users\\raschem\\source\\repos\\SlipperyTrout\\API\\Program.cs",
-              "RelativeToolTip": "API\\Program.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAADwvzMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-11T13:12:37.896Z",
+              "WhenOpened": "2026-11-11T14:47:23.135Z",
+              "EditorCaption": "",
               "OwnerCaption": "%2"
             }
           ]

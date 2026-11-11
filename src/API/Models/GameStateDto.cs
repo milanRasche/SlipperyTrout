@@ -1,0 +1,54 @@
+using Core.Enums;
+using Core.Models;
+
+namespace API.Models
+{
+    public class GameStateDto
+    {
+        public string GameId { get; init; } = string.Empty;
+        public string Status { get; init; } = string.Empty;
+        public PieceDto?[][] Board { get; init; } = [];
+        public IReadOnlyList<MoveDto> Moves { get; init; } = [];
+        public string SideToMove { get; init; } = string.Empty;
+        public int WhiteTimeMs { get; init; }
+        public int BlackTimeMs { get; init; }
+        public string? Result { get; init; }
+
+        public static GameStateDto From(GameState game)
+        {
+            var board = new PieceDto?[8][];
+            for (var row = 0; row < 8; row++)
+            {
+                board[row] = new PieceDto?[8];
+                for (var col = 0; col < 8; col++)
+                {
+                    var piece = game.Board[col, row];
+                    if (piece is not null)
+                    {
+                        board[row][col] = new PieceDto(piece.Color, piece.Type);
+                    }
+                }
+            }
+
+            return new GameStateDto
+            {
+                GameId = game.GameId,
+                Status = game.Status,
+                Board = board,
+                Moves = game.Moves.Select(MoveDto.From).ToArray(),
+                SideToMove = game.SideToMove,
+                WhiteTimeMs = game.WhiteTimeMs,
+                BlackTimeMs = game.BlackTimeMs,
+                Result = game.Result
+            };
+        }
+    }
+
+    public record PieceDto(PlayerColor Color, PieceType Type);
+
+    public record MoveDto(string Uci, int FromCol, int FromRow, int ToCol, int ToRow, PieceType? PromotionTo)
+    {
+        public static MoveDto From(Move move) =>
+            new(move.UCI, move.FromCol, move.FromRow, move.ToCol, move.ToRow, move.PromotionTo);
+    }
+}

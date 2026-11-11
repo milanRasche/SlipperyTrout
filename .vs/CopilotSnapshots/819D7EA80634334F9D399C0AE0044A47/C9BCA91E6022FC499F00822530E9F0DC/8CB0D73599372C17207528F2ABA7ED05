@@ -1,0 +1,65 @@
+﻿using Core.Enums;
+using Core.Interfaces;
+using Core.Models;
+
+namespace Providers.Local
+{
+    public class LocalMoveValidationProvider : IMoveValidationProvider
+    {
+        public bool IsValidMove(GameState game, Move move)
+        {
+            switch (game.Board[move.FromCol, move.FromRow]?.Type)
+            {
+                case PieceType.Pawn:
+                    return IsValidPawnMove(
+                        
+                    );
+                case PieceType.Knight:
+                    return (Math.Abs(move.ToCol - move.FromCol) == 2 && Math.Abs(move.ToRow - move.FromRow) == 1) ||
+                           (Math.Abs(move.ToCol - move.FromCol) == 1 && Math.Abs(move.ToRow - move.FromRow) == 2);
+                case PieceType.Bishop:
+                    return Math.Abs(move.ToCol - move.FromCol) == Math.Abs(move.ToRow - move.FromRow) &&
+                           IsPathClear(game.Board, move);
+                case PieceType.Rook:
+                    return (move.ToCol == move.FromCol || move.ToRow == move.FromRow) &&
+                           IsPathClear(game.Board, move);
+                case PieceType.Queen:
+                    return ((move.ToCol == move.FromCol || move.ToRow == move.FromRow) ||
+                            (Math.Abs(move.ToCol - move.FromCol) == Math.Abs(move.ToRow - move.FromRow))) &&
+                           IsPathClear(game.Board, move);
+                case PieceType.King:
+                    return Math.Max(Math.Abs(move.ToCol - move.FromCol), Math.Abs(move.ToRow - move.FromRow)) == 1;
+            })
+
+            return false;
+        }
+
+        private static bool IsValidPawnMove(GameState game, Move move)
+        {
+            return false;
+        }
+
+        private static bool IsPathClear(Piece?[,] board, Move move)
+        {
+            var colStep = Math.Sign(move.ToCol - move.FromCol);
+            var rowStep = Math.Sign(move.ToRow - move.FromRow);
+            var col = move.FromCol + colStep;
+            var row = move.FromRow + rowStep;
+
+            while (col != move.ToCol || row != move.ToRow)
+            {
+                if (board[col, row] is not null)
+                {
+                    return false;
+                }
+
+                col += colStep;
+                row += rowStep;
+            }
+
+            return true;
+        }
+
+        private static bool IsOnBoard(int col, int row) => col is >= 0 and < 8 && row is >= 0 and < 8;
+    }
+}

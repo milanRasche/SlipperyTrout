@@ -1,0 +1,48 @@
+﻿using Core.Enums;
+
+namespace Core.Models
+{
+    public class Move
+    {
+        public string UCI { get; private set; }
+        public int FromCol { get; private set; }
+        public int FromRow { get; private set; }
+        public int ToCol { get; private set; }
+        public int ToRow { get; private set; }
+        public PieceType? PromotionTo { get; private set; }
+
+        public Move(string moveUCI)
+        {
+            if (string.IsNullOrWhiteSpace(moveUCI) || moveUCI.Length is not (4 or 5))
+            {
+                throw new ArgumentException("Invalid UCI move format", nameof(moveUCI));
+            }
+
+            if (moveUCI[0] is < 'a' or > 'h' ||
+                moveUCI[1] is < '1' or > '8' ||
+                moveUCI[2] is < 'a' or > 'h' ||
+                moveUCI[3] is < '1' or > '8')
+            {
+                throw new ArgumentException("Invalid UCI move coordinates", nameof(moveUCI));
+            }
+
+            UCI = moveUCI;
+            FromCol = moveUCI[0] - 'a';
+            FromRow = moveUCI[1] - '1';
+            ToCol = moveUCI[2] - 'a';
+            ToRow = moveUCI[3] - '1';
+
+            if (moveUCI.Length == 5)
+            {
+                PromotionTo = moveUCI[4] switch
+                {
+                    'q' => PieceType.Queen,
+                    'r' => PieceType.Rook,
+                    'b' => PieceType.Biship,
+                    'n' => PieceType.Knight,
+                    _ => throw new ArgumentException("Invalid promotion piece type", nameof(moveUCI))
+                };
+            }
+        }
+    }
+}

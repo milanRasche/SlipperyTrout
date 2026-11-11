@@ -1,0 +1,99 @@
+﻿using Core.Enums;
+using Core.Interfaces;
+using Core.Models;
+
+namespace Providers.Local
+{
+    public class LocalMoveValidationProvider : IMoveValidationProvider
+    {
+        public bool IsValidMove(GameState game, Move move)
+        {
+            if (game is null || move is null ||
+                !string.Equals(game.Status, "Active", StringComparison.OrdinalIgnoreCase) ||
+                game.Board is null || game.Board.GetLength(0) != 8 || game.Board.GetLength(1) != 8 ||
+                !IsOnBoard(move.FromCol, move.FromRow) || !IsOnBoard(move.ToCol, move.ToRow) ||
+                (move.FromCol == move.ToCol && move.FromRow == move.ToRow) ||
+                !Enum.TryParse<PlayerColor>(game.SideToMove, true, out var sideToMove))
+            {
+                return false;
+            }
+
+            var piece = game.Board[move.FromCol, move.FromRow];
+            var target = game.Board[move.ToCol, move.ToRow];
+            if (piece is null || piece.Color != sideToMove || target?.Color == piece.Color ||
+                target?.Type == PieceType.King)
+            {
+                return false;
+            }
+
+            var colDistance = move.ToCol - move.FromCol;
+            var rowDistance = move.ToRow - move.FromRow;
+
+            return piece.Type switch
+            {
+                PieceType.Pawm => IsValidPawnMove(game.Board, piece, target, move, colDistance, rowDistance),
+                PieceType.Knight => Math.Abs(colDistance) == 1 && Math.Abs(rowDistance) == 2 ||
+                                    Math.Abs(colDistance) == 2 && Math.Abs(rowDistance) == 1,
+                PieceType.Biship => Math.Abs(colDistance) == Math.Abs(rowDistance) &&
+                                    IsPathClear(game.Board, move),
+                PieceType.Rook => (colDistance == 0 || rowDistance == 0) && IsPathClear(game.Board, move),
+                PieceType.Queen => (colDistance == 0 || rowDistance == 0 ||
+                                    Math.Abs(colDistance) == Math.Abs(rowDistance)) &&
+                                   IsPathClear(game.Board, move),
+                PieceType.King => Math.Abs(colDistance) <= 1 && Math.Abs(rowDistance) <= 1,
+                _ => false
+            };
+        }
+
+        private static bool IsValidPawnMove(
+            Piece?[,] board,
+            Piece piece,
+            Piece? target,
+            Move move,
+            int colDistance,
+            int rowDistance)
+        {
+            var direction = piece.Color == PlayerColor.White ? 1 : -1;
+            var startingRow = piece.Color == PlayerColor.White ? 1 : 6;
+            var destinationRow = piece.Color == PlayerColor.White ? 7 : 0;
+            var isForwardMove = colDistance == 0 && target is null &&
+                                (rowDistance == direction ||
+                                 move.FromRow == startingRow && rowDistance == direction * 2 &&
+                                 board[move.FromCol, move.FromRow + direction] is null);
+            var isCapture = Math.Abs(colDistance) == 1 && rowDistance == direction && target is not null;
+
+            if (!isForwardMove && !isCapture)
+            {
+                return false;
+            }
+
+            var requiresPromotion = move.ToRow == destinationRow;
+            return requiresPromotion
+                ? move.PromotionTo is PieceType.Queen or PieceType.Rook or PieceType.Biship or PieceType.Knight
+                : move.PromotionTo is null;
+        }
+
+        private static bool IsPathClear(Piece?[,] board, Move move)
+        {
+            var colStep = Math.Sign(move.ToCol - move.FromCol);
+            var rowStep = Math.Sign(move.ToRow - move.FromRow);
+            var col = move.FromCol + colStep;
+            var row = move.FromRow + rowStep;
+
+            while (col != move.ToCol || row != move.ToRow)
+            {
+                if (board[col, row] is not null)
+                {
+                    return false;
+                }
+
+                col += colStep;
+                row += rowStep;
+            }
+
+            return true;
+        }
+
+        private static bool IsOnBoard(int col, int row) => col is >= 0 and < 8 && row is >= 0 and < 8;
+    }
+}

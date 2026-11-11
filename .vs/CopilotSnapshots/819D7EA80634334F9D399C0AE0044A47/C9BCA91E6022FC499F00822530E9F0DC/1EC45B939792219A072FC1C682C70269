@@ -1,0 +1,89 @@
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Core.Enums;
+using Core.Models;
+
+namespace API.Json
+{
+    public class PieceBoardJsonConverter : JsonConverter<Piece?[,]>
+    {
+        public override Piece?[,] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            using var document = JsonDocument.ParseValue(ref reader);
+            var rows = document.RootElement;
+            if (rows.ValueKind != JsonValueKind.Array || rows.GetArrayLength() != 8)
+            {
+                throw new JsonException("A chess board must contain eight rows.");
+            }
+
+            var board = new Piece?[8, 8];
+            var rowIndex = 0;
+            foreach (var row in rows.EnumerateArray())
+            {
+                if (row.ValueKind != JsonValueKind.Array || row.GetArrayLength() != 8)
+                {
+                    throw new JsonException("Each chess board row must contain eight squares.");
+                }
+
+                var colIndex = 0;
+                foreach (var square in row.EnumerateArray())
+                {
+                    if (square.ValueKind != JsonValueKind.Null)
+                    {
+                        var color = ReadEnum<PlayerColor>(square, "color", "Color");
+                        var type = ReadEnum<PieceType>(square, "type", "Type");
+                        board[colIndex, rowIndex] = new Piece(color, type);
+                    }
+
+                    colIndex++;
+                }
+
+                rowIndex++;
+            }
+
+            return board;
+        }
+
+        public override void Write(Utf8JsonWriter writer, Piece?[,] board, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            for (var row = 0; row < 8; row++)
+            {
+                writer.WriteStartArray();
+                for (var col = 0; col < 8; col++)
+                {
+                    JsonSerializer.Serialize(writer, board[col, row], options);
+                }
+
+                writer.WriteEndArray();
+            }
+
+            writer.WriteEndArray();
+        }
+
+        private static TEnum ReadEnum<TEnum>(JsonElement piece, string camelCaseName, string pascalCaseName)
+            where TEnum : struct, Enum
+        {
+            if (!piece.TryGetProperty(camelCaseName, out var value) &&
+                !piece.TryGetProperty(pascalCaseName, out value))
+            {
+                throw new JsonException($"A piece must contain a {camelCaseName} value.");
+            }
+
+            TEnum result;
+            if (value.ValueKind == JsonValueKind.String &&
+                Enum.TryParse(value.GetString(), true, out result))
+            {
+                return result;
+            }
+
+            if (value.ValueKind == JsonValueKind.Number &&
+                value.TryGetInt32(out var numericValue) && Enum.IsDefined(typeof(TEnum), numericValue))
+            {
+                return (TEnum)Enum.ToObject(typeof(TEnum), numericValue);
+            }
+
+            throw new JsonException($"The piece {camelCaseName} value is invalid.");
+        }
+    }
+}

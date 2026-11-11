@@ -1,0 +1,78 @@
+﻿using API.Models;
+using Core.Models;
+using Core.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class GamesController : Controller
+    {
+        private readonly GameService _gameService;
+
+        public GamesController(GameService gamesService)
+        {
+            _gameService = gamesService;
+        }
+
+        // GET: api/v1/games
+        [HttpGet]
+        public ActionResult<IEnumerable<GameState>> GetGames()
+        {
+            return Ok(_gameService.GetAllGames());
+        }
+
+        // GET: api/v1/games/{gameId}
+        [HttpGet("{gameId}")]
+        public ActionResult<GameState> GetGame(string gameId)
+        {
+            var game = _gameService.GetGame(gameId);
+
+            if (game == null) return NotFound();
+
+            return Ok(game);
+        }
+
+        // POST: api/v1/games
+        [HttpPost]
+        public ActionResult<GameState> CreateGame(
+            [FromBody] GameOptions options)
+        {
+            var game = _gameService.CreateGame(options);
+
+            return CreatedAtAction(
+                nameof(GetGame),
+                new { gameId = game.GameId },
+                game
+            );
+        }
+
+        // POST: api/v1/games/move
+        [HttpPost("/move")]
+        public ActionResult<GameState> MakeMove([FromBody] MoveRequest request)
+        {
+            Move move;
+            // Validate move is in correct UCI format
+            try
+            {
+                move = new Move(request.Uci);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(new { error = exception.Message });
+            }
+
+            GameState? game;
+
+            if (_gameService.TryMakeMove(request.GameId, move, out game))
+            {
+                return Ok(game);
+            }
+
+            return game is null
+                ? NotFound()
+                : Conflict(new { error = "The move is not valid for the current game state." });
+        }
+    }
+}

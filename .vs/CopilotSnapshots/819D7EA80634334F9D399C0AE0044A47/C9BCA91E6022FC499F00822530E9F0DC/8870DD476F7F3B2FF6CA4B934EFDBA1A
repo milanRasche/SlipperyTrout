@@ -1,0 +1,75 @@
+﻿using API.Models;
+using Core.Models;
+using Core.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class GamesController : Controller
+    {
+        private readonly GameService _gameService;
+
+        public GamesController(GameService gamesService)
+        {
+            _gameService = gamesService;
+        }
+
+        // GET: api/v1/games
+        [HttpGet]
+        public ActionResult<IEnumerable<GameState>> GetGames()
+        {
+            return Ok(_gameService.GetAllGames());
+        }
+
+        // GET: api/v1/games/{gameId}
+        [HttpGet("{gameId}")]
+        public ActionResult<GameState> GetGame(string gameId)
+        {
+            var game = _gameService.GettGame(gameId);
+
+            if (game == null) return NotFound();
+
+            return Ok(game);
+        }
+
+        // POST: api/v1/games
+        [HttpPost]
+        public ActionResult<GameState> CreateGame(
+            [FromBody] GameOptions options)
+        {
+            var game = _gameService.CreateGame(options);
+
+            return CreatedAtAction(
+                nameof(GetGame),
+                new { gameId = game.GameId },
+                game
+            );
+        }
+
+        // POST: api/v1/games/{gameId}/moves
+        [HttpPost("{gameId}/moves")]
+        public ActionResult<GameState> MakeMove(string gameId, [FromBody] MoveRequest request)
+        {
+            Move move;
+            try
+            {
+                move = new Move(request.Uci);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(new { error = exception.Message });
+            }
+
+            if (_gameService.TryMakeMove(gameId, move, out var game))
+            {
+                return Ok(game);
+            }
+
+            return game is null
+                ? NotFound()
+                : Conflict(new { error = "The move is not valid for the current game state." });
+        }
+    }
+}

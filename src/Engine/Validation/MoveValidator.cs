@@ -1,0 +1,194 @@
+using Core.Enums;
+using Core.Models;
+
+namespace Engine.Validation
+{
+    public class MoveValidator
+    {
+        public bool IsValidMove(GameState game, Move move)
+        {
+            if (game is null || move is null ||
+                !string.Equals(game.Status, "Active", StringComparison.OrdinalIgnoreCase) ||
+                game.Board is null || game.Board.GetLength(0) != 8 || game.Board.GetLength(1) != 8 ||
+                !IsOnBoard(move.FromCol, move.FromRow) || !IsOnBoard(move.ToCol, move.ToRow) ||
+                (move.FromCol == move.ToCol && move.FromRow == move.ToRow) ||
+                !Enum.TryParse<PlayerColor>(game.SideToMove, true, out var sideToMove) ||
+                !Enum.IsDefined(sideToMove))
+            {
+                return false;
+            }
+
+            var movingPiece = game.Board[move.FromCol, move.FromRow];
+            var targetPiece = game.Board[move.ToCol, move.ToRow];
+            if (movingPiece is null || movingPiece.Color != sideToMove ||
+                targetPiece?.Color == movingPiece.Color || targetPiece?.Type == PieceType.King)
+            {
+                return false;
+            }
+
+            var colDistance = move.ToCol - move.FromCol;
+            var rowDistance = move.ToRow - move.FromRow;
+            var isValidMovement = movingPiece.Type switch
+            {
+                PieceType.Pawn => IsValidPawnMove(game.Board, movingPiece, targetPiece, move, colDistance, rowDistance),
+                PieceType.Knight => IsKnightMove(colDistance, rowDistance),
+                PieceType.Bishop => IsDiagonalMove(colDistance, rowDistance) && IsPathClear(game.Board, move),
+                PieceType.Rook => IsStraightMove(colDistance, rowDistance) && IsPathClear(game.Board, move),
+                PieceType.Queen => (IsStraightMove(colDistance, rowDistance) || IsDiagonalMove(colDistance, rowDistance)) &&
+                                   IsPathClear(game.Board, move),
+                PieceType.King => Math.Max(Math.Abs(colDistance), Math.Abs(rowDistance)) == 1,
+                _ => false
+            };
+            if (!isValidMovement)
+            {
+                return false;
+            }
+
+            var resultingBoard = (Piece?[,])game.Board.Clone();
+            resultingBoard[move.FromCol, move.FromRow] = null;
+            resultingBoard[move.ToCol, move.ToRow] = move.PromotionTo is { } promotion
+                ? new Piece(movingPiece.Color, promotion)
+                : movingPiece;
+
+            return !IsKingInCheck(resultingBoard, movingPiece.Color);
+        }
+
+        private static bool IsValidPawnMove(
+            Piece?[,] board,
+            Piece pawn,
+            Piece? target,
+            Move move,
+            int colDistance,
+            int rowDistance)
+        {
+            var direction = pawn.Color == PlayerColor.White ? 1 : -1;
+            var startingRow = pawn.Color == PlayerColor.White ? 1 : 6;
+            var promotionRow = pawn.Color == PlayerColor.White ? 7 : 0;
+            var isSingleStep = colDistance == 0 && rowDistance == direction && target is null;
+            var isDoubleStep = colDistance == 0 && move.FromRow == startingRow &&
+                               rowDistance == direction * 2 && target is null &&
+                               board[move.FromCol, move.FromRow + direction] is null;
+            var isCapture = Math.Abs(colDistance) == 1 && rowDistance == direction && target is not null;
+
+            if (!isSingleStep && !isDoubleStep && !isCapture)
+            {
+                return false;
+            }
+
+            var requiresPromotion = move.ToRow == promotionRow;
+            return requiresPromotion
+                ? move.PromotionTo is PieceType.Queen or PieceType.Rook or PieceType.Bishop or PieceType.Knight
+                : move.PromotionTo is null;
+        }
+
+        private static bool IsKingInCheck(Piece?[,] board, PlayerColor color)
+        {
+            var kingCol = -1;
+            var kingRow = -1;
+            for (var col = 0; col < 8; col++)
+            {
+                for (var row = 0; row < 8; row++)
+                {
+                    if (board[col, row] is { Color: var pieceColor, Type: PieceType.King } && pieceColor == color)
+                    {
+                        if (kingCol >= 0)
+                        {
+                            return true;
+                        }
+
+                        kingCol = col;
+                        kingRow = row;
+                    }
+                }
+            }
+
+            if (kingCol < 0)
+            {
+                return true;
+            }
+
+            var attackingColor = color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
+            for (var col = 0; col < 8; col++)
+            {
+                for (var row = 0; row < 8; row++)
+                {
+                    var piece = board[col, row];
+                    if (piece?.Color == attackingColor && AttacksSquare(board, piece, col, row, kingCol, kingRow))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool AttacksSquare(Piece?[,] board, Piece piece, int fromCol, int fromRow, int toCol, int toRow)
+        {
+            var colDistance = toCol - fromCol;
+            var rowDistance = toRow - fromRow;
+
+            return piece.Type switch
+            {
+                PieceType.Pawn => Math.Abs(colDistance) == 1 &&
+                                  rowDistance == (piece.Color == PlayerColor.White ? 1 : -1),
+                PieceType.Knight => IsKnightMove(colDistance, rowDistance),
+                PieceType.Bishop => IsDiagonalMove(colDistance, rowDistance) &&
+                                    IsPathClear(board, fromCol, fromRow, toCol, toRow),
+                PieceType.Rook => IsStraightMove(colDistance, rowDistance) &&
+                                  IsPathClear(board, fromCol, fromRow, toCol, toRow),
+                PieceType.Queen => (IsStraightMove(colDistance, rowDistance) || IsDiagonalMove(colDistance, rowDistance)) &&
+                                   IsPathClear(board, fromCol, fromRow, toCol, toRow),
+                PieceType.King => Math.Max(Math.Abs(colDistance), Math.Abs(rowDistance)) == 1,
+                _ => false
+            };
+        }
+
+        private static bool IsPathClear(Piece?[,] board, Move move)
+        {
+            return IsPathClear(board, move.FromCol, move.FromRow, move.ToCol, move.ToRow);
+        }
+
+        private static bool IsPathClear(Piece?[,] board, int fromCol, int fromRow, int toCol, int toRow)
+        {
+            var colStep = Math.Sign(toCol - fromCol);
+            var rowStep = Math.Sign(toRow - fromRow);
+            var col = fromCol + colStep;
+            var row = fromRow + rowStep;
+
+            while (col != toCol || row != toRow)
+            {
+                if (board[col, row] is not null)
+                {
+                    return false;
+                }
+
+                col += colStep;
+                row += rowStep;
+            }
+
+            return true;
+        }
+
+        private static bool IsKnightMove(int colDistance, int rowDistance)
+        {
+            return Math.Abs(colDistance) == 1 && Math.Abs(rowDistance) == 2 ||
+                   Math.Abs(colDistance) == 2 && Math.Abs(rowDistance) == 1;
+        }
+
+        private static bool IsDiagonalMove(int colDistance, int rowDistance)
+        {
+            return Math.Abs(colDistance) == Math.Abs(rowDistance);
+        }
+
+        private static bool IsStraightMove(int colDistance, int rowDistance)
+        {
+            return colDistance == 0 || rowDistance == 0;
+        }
+
+        private static bool IsOnBoard(int col, int row)
+        {
+            return col is >= 0 and < 8 && row is >= 0 and < 8;
+        }
+    }
+}
