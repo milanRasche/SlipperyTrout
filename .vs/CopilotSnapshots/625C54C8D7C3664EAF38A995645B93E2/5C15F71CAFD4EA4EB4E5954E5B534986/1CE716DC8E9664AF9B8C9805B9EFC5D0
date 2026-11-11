@@ -1,0 +1,288 @@
+﻿using SlipperyTrout.Chess;
+
+namespace SlipperyTrout.WinForms;
+
+internal sealed class ChessForm : Form
+{
+    private GameSession _session;
+    private ChessBoardControl _board = null!;
+    private Label _statusLabel = null!;
+    private Button _acceptDrawButton = null!;
+    private Button _declineDrawButton = null!;
+
+    public ChessForm()
+    {
+        _session = new GameSession(ChessGame.NewGame());
+        InitializeWindow();
+        BuildControls();
+        RefreshView();
+    }
+
+    private void InitializeWindow()
+    {
+        Text = "Slippery Trout Chess";
+        ClientSize = new Size(660, 760);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+        MaximizeBox = false;
+        StartPosition = FormStartPosition.CenterScreen;
+    }
+
+    private void BuildControls()
+    {
+        _board = new ChessBoardControl(_session)
+        {
+            Location = new Point(10, 10)
+        };
+        _board.MoveRequested += HandleMoveRequested;
+        Controls.Add(_board);
+
+        FlowLayoutPanel controls = new()
+        {
+            Location = new Point(10, 660),
+            Size = new Size(640, 40),
+            WrapContents = false
+        };
+
+        Button newGameButton = CreateButton("New game", HandleNewGame);
+        Button offerDrawButton = CreateButton("Offer draw", HandleOfferDraw);
+        _acceptDrawButton = CreateButton("Accept draw", HandleAcceptDraw);
+        _declineDrawButton = CreateButton("Decline draw", HandleDeclineDraw);
+        Button claimDrawButton = CreateButton("Claim draw", HandleClaimDraw);
+        Button resignButton = CreateButton("Resign", HandleResign);
+
+        controls.Controls.Add(newGameButton);
+        controls.Controls.Add(offerDrawButton);
+        controls.Controls.Add(_acceptDrawButton);
+        controls.Controls.Add(_declineDrawButton);
+        controls.Controls.Add(claimDrawButton);
+        controls.Controls.Add(resignButton);
+        Controls.Add(controls);
+
+        _statusLabel = new Label
+        {
+            AutoSize = false,
+            Location = new Point(10, 710),
+            Size = new Size(640, 40),
+            TextAlign = ContentAlignment.MiddleCenter
+        };
+        Controls.Add(_statusLabel);
+    }
+
+    private void HandleMoveRequested(object? sender, MoveRequestedEventArgs e)
+    {
+        char piece = _session.State.Board[e.FromRow, e.FromCol];
+        string uciMove = CreateUciMove(e.FromRow, e.FromCol, e.ToRow, e.ToCol);
+
+        if (char.ToUpper(piece) == 'P' && (e.ToRow == 0 || e.ToRow == 7))
+        {
+            char? promotion = PromotionDialog.Show(this);
+            if (!promotion.HasValue)
+                return;
+
+            uciMove += promotion.Value;
+        }
+
+        try
+        {
+            _session.MakeMove(uciMove);
+            RefreshView();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Illegal move",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    private void HandleNewGame(object? sender, EventArgs e)
+    {
+        _session = new GameSession(ChessGame.NewGame());
+        ReplaceBoard();
+        RefreshView();
+    }
+
+    private void HandleOfferDraw(object? sender, EventArgs e)
+    {
+        RunAction(
+            () => _session.OfferDraw(),
+            "Draw offer made.");
+    }
+
+    private void HandleAcceptDraw(object? sender, EventArgs e)
+    {
+        RunAction(
+            () => _session.AcceptDraw(),
+            "Draw accepted.");
+    }
+
+    private void HandleDeclineDraw(object? sender, EventArgs e)
+    {
+        RunAction(
+            () => _session.DeclineDraw(),
+            "Draw declined.");
+    }
+
+    private void HandleClaimDraw(object? sender, EventArgs e)
+    {
+        RunAction(
+            () => _session.ClaimDraw(),
+            "Draw claimed.");
+    }
+
+    private void HandleResign(object? sender, EventArgs e)
+    {
+        if (MessageBox.Show(
+                this,
+                "Are you sure you want to resign?",
+                "Resign",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
+        RunAction(
+            () => _session.Resign(),
+            "Resignation recorded.");
+    }
+
+    private void RunAction(Action action, string successMessage)
+    {
+        try
+        {
+            action();
+            RefreshView();
+            if (_session.IsFinished)
+                MessageBox.Show(this, FormatResult(), "Game over");
+            else
+                _statusLabel.Text = successMessage;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Action unavailable",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    private void ReplaceBoard()
+    {
+        Controls.Remove(_board);
+        _board.Dispose();
+        BuildControls();
+    }
+
+    private void RefreshView()
+    {
+        _board.RefreshBoard();
+        _acceptDrawButton.Enabled =
+            !_session.IsFinished &&
+            _session.PendingDrawOfferByWhite.HasValue &&
+            _session.PendingDrawOfferByWhite.Value != _session.State.WhiteToMove;
+        _declineDrawButton.Enabled = _acceptDrawButton.Enabled;
+
+        if (_session.IsFinished)
+        {
+            _statusLabel.Text = FormatResult();
+            return;
+        }
+
+        string side = _session.State.WhiteToMove ? "White" : "Black";
+        _statusLabel.Text = $"{side} to move";
+    }
+
+    private string FormatResult()
+    {
+        return _session.Result.Reason switch
+        {
+            GameEndReason.Checkmate =>
+                $"Checkmate - {FormatWinner()} wins",
+            GameEndReason.Resignation =>
+                $"{FormatWinner()} wins by resignation",
+            GameEndReason.Stalemate => "Draw - stalemate",
+            GameEndReason.DrawAgreement => "Draw agreed",
+            GameEndReason.ThreefoldRepetition => "Draw claimed - threefold repetition",
+            GameEndReason.FivefoldRepetition => "Draw - fivefold repetition",
+            GameEndReason.FiftyMoveRule => "Draw claimed - fifty-move rule",
+            GameEndReason.SeventyFiveMoveRule => "Draw - seventy-five-move rule",
+            GameEndReason.InsufficientMaterial => "Draw - insufficient material",
+            _ => "Game over"
+        };
+    }
+
+    private string FormatWinner()
+    {
+        return _session.Result.WinnerIsWhite == true ? "White" : "Black";
+    }
+
+    private static Button CreateButton(string text, EventHandler handler)
+    {
+        Button button = new()
+        {
+            AutoSize = true,
+            Text = text
+        };
+        button.Click += handler;
+        return button;
+    }
+
+    private static string CreateUciMove(
+        int fromRow,
+        int fromCol,
+        int toRow,
+        int toCol)
+    {
+        return $"{(char)('a' + fromCol)}{8 - fromRow}" +
+            $"{(char)('a' + toCol)}{8 - toRow}";
+    }
+}
+
+internal static class PromotionDialog
+{
+    public static char? Show(IWin32Window owner)
+    {
+        using Form dialog = new()
+        {
+            Text = "Promote pawn",
+            ClientSize = new Size(280, 70),
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            StartPosition = FormStartPosition.CenterParent,
+            MaximizeBox = false,
+            MinimizeBox = false
+        };
+
+        char? selectedPiece = null;
+        FlowLayoutPanel buttons = new()
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.LeftToRight,
+            Padding = new Padding(8)
+        };
+
+        foreach (char piece in new[] { 'q', 'r', 'b', 'n' })
+        {
+            Button button = new()
+            {
+                Text = piece.ToString().ToUpperInvariant(),
+                Width = 55,
+                Height = 32
+            };
+            button.Click += (_, _) =>
+            {
+                selectedPiece = piece;
+                dialog.DialogResult = DialogResult.OK;
+            };
+            buttons.Controls.Add(button);
+        }
+
+        dialog.Controls.Add(buttons);
+        return dialog.ShowDialog(owner) == DialogResult.OK
+            ? selectedPiece
+            : null;
+    }
+}

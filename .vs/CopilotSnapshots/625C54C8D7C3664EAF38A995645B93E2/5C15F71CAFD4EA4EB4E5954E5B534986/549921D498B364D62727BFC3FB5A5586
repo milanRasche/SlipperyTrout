@@ -1,0 +1,192 @@
+﻿using SlipperyTrout.Chess;
+using System.Drawing.Drawing2D;
+
+namespace SlipperyTrout.WinForms;
+
+internal sealed class MoveRequestedEventArgs : EventArgs
+{
+    public int FromRow { get; }
+    public int FromCol { get; }
+    public int ToRow { get; }
+    public int ToCol { get; }
+
+    public MoveRequestedEventArgs(int fromRow, int fromCol, int toRow, int toCol)
+    {
+        FromRow = fromRow;
+        FromCol = fromCol;
+        ToRow = toRow;
+        ToCol = toCol;
+    }
+}
+
+internal sealed class ChessBoardControl : Panel
+{
+    private const int BoardSize = 640;
+    private const int CellSize = BoardSize / 8;
+    private static readonly Color LightSquare = Color.FromArgb(240, 217, 181);
+    private static readonly Color DarkSquare = Color.FromArgb(181, 136, 99);
+    private static readonly Font PieceFont = new("Segoe UI Symbol", 48, FontStyle.Regular);
+
+    private readonly GameSession _session;
+    private int? _dragFromRow;
+    private int? _dragFromCol;
+    private Point _dragPoint;
+
+    public event EventHandler<MoveRequestedEventArgs>? MoveRequested;
+
+    public ChessBoardControl(GameSession session)
+    {
+        _session = session;
+        Size = new Size(BoardSize, BoardSize);
+        MinimumSize = Size;
+        MaximumSize = Size;
+        DoubleBuffered = true;
+        BackColor = Color.Black;
+        AllowDrop = false;
+
+        MouseDown += HandleMouseDown;
+        MouseMove += HandleMouseMove;
+        MouseUp += HandleMouseUp;
+    }
+
+    public void RefreshBoard()
+    {
+        Invalidate();
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+        for (int row = 0; row < 8; row++)
+        {
+            for (int col = 0; col < 8; col++)
+            {
+                Rectangle square = new(col * CellSize, row * CellSize, CellSize, CellSize);
+                Color squareColor = (row + col) % 2 == 0
+                    ? LightSquare
+                    : DarkSquare;
+
+                using SolidBrush brush = new(squareColor);
+                e.Graphics.FillRectangle(brush, square);
+
+                if (_dragFromRow == row && _dragFromCol == col)
+                    continue;
+
+                DrawPiece(e.Graphics, _session.State.Board[row, col], square);
+            }
+        }
+
+        if (_dragFromRow.HasValue && _dragFromCol.HasValue)
+        {
+            char piece = _session.State.Board[
+                _dragFromRow.Value,
+                _dragFromCol.Value];
+
+            Rectangle destination = new(
+                _dragPoint.X - CellSize / 2,
+                _dragPoint.Y - CellSize / 2,
+                CellSize,
+                CellSize);
+            DrawPiece(e.Graphics, piece, destination);
+        }
+    }
+
+    private void HandleMouseDown(object? sender, MouseEventArgs e)
+    {
+        if (e.Button != MouseButtons.Left || _session.IsFinished)
+            return;
+
+        if (!TryGetSquare(e.Location, out int row, out int col))
+            return;
+
+        char piece = _session.State.Board[row, col];
+        if (piece == '\0' || char.IsUpper(piece) != _session.State.WhiteToMove)
+            return;
+
+        _dragFromRow = row;
+        _dragFromCol = col;
+        _dragPoint = e.Location;
+        Invalidate();
+    }
+
+    private void HandleMouseMove(object? sender, MouseEventArgs e)
+    {
+        if (!_dragFromRow.HasValue || !_dragFromCol.HasValue)
+            return;
+
+        _dragPoint = e.Location;
+        Invalidate();
+    }
+
+    private void HandleMouseUp(object? sender, MouseEventArgs e)
+    {
+        if (e.Button != MouseButtons.Left ||
+            !_dragFromRow.HasValue ||
+            !_dragFromCol.HasValue)
+            return;
+
+        int fromRow = _dragFromRow.Value;
+        int fromCol = _dragFromCol.Value;
+        bool hasDestination = TryGetSquare(e.Location, out int toRow, out int toCol);
+
+        _dragFromRow = null;
+        _dragFromCol = null;
+        Invalidate();
+
+        if (hasDestination && (fromRow != toRow || fromCol != toCol))
+        {
+            MoveRequested?.Invoke(
+                this,
+                new MoveRequestedEventArgs(fromRow, fromCol, toRow, toCol));
+        }
+    }
+
+    private static void DrawPiece(Graphics graphics, char piece, Rectangle square)
+    {
+        if (piece == '\0')
+            return;
+
+        string symbol = piece switch
+        {
+            'K' => "♔",
+            'Q' => "♕",
+            'R' => "♖",
+            'B' => "♗",
+            'N' => "♘",
+            'P' => "♙",
+            'k' => "♚",
+            'q' => "♛",
+            'r' => "♜",
+            'b' => "♝",
+            'n' => "♞",
+            'p' => "♟",
+            _ => string.Empty
+        };
+
+        if (symbol.Length == 0)
+            return;
+
+        Color fillColor = char.IsUpper(piece) ? Color.White : Color.Black;
+        using SolidBrush brush = new(fillColor);
+        using StringFormat format = new()
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center
+        };
+
+        graphics.DrawString(symbol, PieceFont, brush, square, format);
+    }
+
+    private static bool TryGetSquare(Point point, out int row, out int col)
+    {
+        col = point.X / CellSize;
+        row = point.Y / CellSize;
+
+        return point.X >= 0 && point.X < BoardSize &&
+            point.Y >= 0 && point.Y < BoardSize;
+    }
+}

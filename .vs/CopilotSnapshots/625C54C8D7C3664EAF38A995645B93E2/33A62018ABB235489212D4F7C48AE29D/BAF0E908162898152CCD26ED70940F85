@@ -1,0 +1,178 @@
+﻿using SlipperyTrout.Chess;
+
+namespace Chess.ConsoleApp;
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        bool running = true;
+
+        while (running)
+        {
+            Console.WriteLine("\n=== Chess Engine ===");
+            Console.WriteLine("1. New Game");
+            Console.WriteLine("2. Load FEN");
+            Console.WriteLine("3. Exit");
+            Console.Write("Select option: ");
+
+            string? input = Console.ReadLine();
+
+            GameState? game = null;
+
+            switch (input)
+            {
+                case "1":
+                    game = ChessGame.NewGame();
+                    break;
+
+                case "2":
+                    Console.Write("Enter FEN: ");
+                    string? fen = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(fen))
+                    {
+                        try
+                        {
+                            game = ChessGame.FromFEN(fen);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Invalid FEN: {ex.Message}");
+                        }
+                    }
+                    break;
+
+                case "3":
+                    running = false;
+                    continue;
+
+                default:
+                    Console.WriteLine("Invalid option.");
+                    continue;
+            }
+
+            if (game != null)
+            {
+                PlayGame(game);
+            }
+        }
+    }
+
+    static void PlayGame(GameState game)
+    {
+        GameSession session = new(game);
+
+        while (!session.IsFinished)
+        {
+            GameState state = session.State;
+
+            Console.WriteLine("\n" + GameFormatter.Format(state));
+
+            MoveValidator validator = new();
+            if (validator.IsInCheck(state, state.WhiteToMove))
+            {
+                string checkedSide = state.WhiteToMove ? "White" : "Black";
+                Console.WriteLine($"Check! {checkedSide} is in check.");
+            }
+
+            Console.WriteLine(
+                state.WhiteToMove ? "\nWhite to move." : "\nBlack to move.");
+
+            if (session.PendingDrawOfferByWhite.HasValue)
+            {
+                string offeringSide = session.PendingDrawOfferByWhite.Value
+                    ? "White"
+                    : "Black";
+                Console.WriteLine(
+                    $"{offeringSide} has offered a draw. " +
+                    "Use 'accept draw' or 'decline draw'.");
+            }
+
+            Console.Write(
+                "Enter move, 'offer draw', 'claim draw', 'resign', or 'exit': ");
+
+            string? command = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(command))
+                continue;
+
+            if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            try
+            {
+                HandleCommand(session, command);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Command rejected: {ex.Message}");
+            }
+        }
+
+        Console.WriteLine("\n" + GameFormatter.Format(session.State));
+        Console.WriteLine(FormatResult(session.Result));
+    }
+
+    static void HandleCommand(GameSession session, string command)
+    {
+        switch (command.Trim().ToLowerInvariant())
+        {
+            case "offer draw":
+                session.OfferDraw();
+                Console.WriteLine("Draw offer made.");
+                break;
+
+            case "accept draw":
+                session.AcceptDraw();
+                break;
+
+            case "decline draw":
+                session.DeclineDraw();
+                Console.WriteLine("Draw offer declined.");
+                break;
+
+            case "claim draw":
+                session.ClaimDraw();
+                break;
+
+            case "resign":
+                session.Resign();
+                break;
+
+            default:
+                session.MakeMove(command);
+                Console.WriteLine("Move successful!");
+                break;
+        }
+    }
+
+    static string FormatResult(GameResult result)
+    {
+        return result.Reason switch
+        {
+            GameEndReason.Checkmate =>
+                $"Checkmate! {FormatWinner(result.WinnerIsWhite)} wins.",
+            GameEndReason.Resignation =>
+                $"{FormatWinner(result.WinnerIsWhite)} wins by resignation.",
+            GameEndReason.Stalemate => "Stalemate! The game is a draw.",
+            GameEndReason.DrawAgreement => "Draw agreed.",
+            GameEndReason.ThreefoldRepetition =>
+                "Draw claimed by threefold repetition.",
+            GameEndReason.FivefoldRepetition =>
+                "Draw by fivefold repetition.",
+            GameEndReason.FiftyMoveRule =>
+                "Draw claimed by the fifty-move rule.",
+            GameEndReason.SeventyFiveMoveRule =>
+                "Draw by the seventy-five-move rule.",
+            GameEndReason.InsufficientMaterial =>
+                "Draw by insufficient material.",
+            _ => "Game ended."
+        };
+    }
+
+    static string FormatWinner(bool? winnerIsWhite)
+    {
+        return winnerIsWhite == true ? "White" : "Black";
+    }
+}
